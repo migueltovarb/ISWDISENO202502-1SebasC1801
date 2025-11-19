@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Vehículos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .form-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        input, select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-edit {
+            background: #ffc107;
+            color: #333;
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+        
+        .btn-edit:hover {
+            background: #e0a800;
+        }
+        
+        .vehicles-section {
+            margin-top: 30px;
+        }
+        
+        .vehicles-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .vehicle-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        
+        .vehicle-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .vehicle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .vehicle-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .vehicle-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            font-size: 0.85em;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .detail-value {
+            font-size: 1.1em;
+            color: #333;
+            margin-top: 3px;
+        }
+        
+        .price {
+            color: #28a745;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+        
+        .no-vehicles {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 Gestión de Vehículos</h1>
+            <p>Sistema de administración con MongoDB</p>
+        </div>
+        
+        <div class="content">
+            <div id="alertContainer"></div>
+            
+            <div class="form-section">
+                <h2 id="formTitle">➕ Agregar Nuevo Vehículo</h2>
+                <form id="vehicleForm">
+                    <input type="hidden" id="vehicleId">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="marca">Marca *</label>
+                            <input type="text" id="marca" required placeholder="Ej: Toyota">
+                        </div>
+                        <div class="form-group">
+                            <label for="modelo">Modelo *</label>
+                            <input type="text" id="modelo" required placeholder="Ej: Corolla">
+                        </div>
+                        <div class="form-group">
+                            <label for="anio">Año *</label>
+                            <input type="number" id="anio" required min="1900" max="2030" placeholder="Ej: 2023">
+                        </div>
+                        <div class="form-group">
+                            <label for="color">Color *</label>
+                            <input type="text" id="color" required placeholder="Ej: Blanco">
+                        </div>
+                        <div class="form-group">
+                            <label for="placa">Placa *</label>
+                            <input type="text" id="placa" required placeholder="Ej: ABC123">
+                        </div>
+                        <div class="form-group">
+                            <label for="precio">Precio (COP) *</label>
+                            <input type="text" id="precio" required placeholder="Ej: 50000000">
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn-primary" id="submitBtn">Guardar Vehículo</button>
+                        <button type="button" class="btn-secondary" id="cancelBtn" onclick="cancelEdit()">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="vehicles-section">
+                <h2>📋 Lista de Vehículos</h2>
+                <div id="vehiclesList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/vehiculos';
+        let editingId = null;
+
+        // Formatear precio en pesos colombianos
+        function formatCOP(amount) {
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Mostrar alerta
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        // Cargar vehículos
+        async function loadVehicles() {
+            try {
+                const response = await fetch(API_URL);
+                const vehicles = await response.json();
+                
+                const vehiclesList = document.getElementById('vehiclesList');
+                
+                if (vehicles.length === 0) {
+                    vehiclesList.innerHTML = '<div class="no-vehicles">No hay vehículos registrados</div>';
+                    return;
+                }
+                
+                vehiclesList.innerHTML = vehicles.map(vehicle => `
+                    <div class="vehicle-card">
+                        <div class="vehicle-header">
+                            <div class="vehicle-title">${vehicle.marca} ${vehicle.modelo}</div>
+                            <div class="btn-group">
+                                <button class="btn-edit" onclick="editVehicle('${vehicle.id}')">✏️ Editar</button>
+                                <button class="btn-danger" onclick="deleteVehicle('${vehicle.id}')">🗑️ Eliminar</button>
+                            </div>
+                        </div>
+                        <div class="vehicle-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Año</span>
+                                <span class="detail-value">${vehicle.anio}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Color</span>
+                                <span class="detail-value">${vehicle.color}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Placa</span>
+                                <span class="detail-value">${vehicle.placa}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Precio</span>
+                                <span class="detail-value price">${formatCOP(vehicle.precio)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                showAlert('Error al cargar vehículos: ' + error.message, 'error');
+            }
+        }
+
+        // Guardar vehículo
+        document.getElementById('vehicleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const vehicleData = {
+                marca: document.getElementById('marca').value,
+                modelo: document.getElementById('modelo').value,
+                anio: parseInt(document.getElementById('anio').value),
+                color: document.getElementById('color').value,
+                placa: document.getElementById('placa').value,
+                precio: parseFloat(document.getElementById('precio').value.replace(/[^0-9.]/g, ''))
+            };
+            
+            try {
+                const vehicleId = document.getElementById('vehicleId').value;
+                const url = vehicleId ? `${API_URL}/${vehicleId}` : API_URL;
+                const method = vehicleId ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(vehicleData)
+                });
+                
+                if (response.ok) {
+                    showAlert(vehicleId ? 'Vehículo actualizado exitosamente' : 'Vehículo creado exitosamente');
+                    document.getElementById('vehicleForm').reset();
+                    document.getElementById('vehicleId').value = '';
+                    document.getElementById('formTitle').textContent = '➕ Agregar Nuevo Vehículo';
+                    editingId = null;
+                    loadVehicles();
+                } else {
+                    showAlert('Error al guardar el vehículo', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        });
+
+        // Editar vehículo
+        async function editVehicle(id) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`);
+                const vehicle = await response.json();
+                
+                document.getElementById('vehicleId').value = vehicle.id;
+                document.getElementById('marca').value = vehicle.marca;
+                document.getElementById('modelo').value = vehicle.modelo;
+                document.getElementById('anio').value = vehicle.anio;
+                document.getElementById('color').value = vehicle.color;
+                document.getElementById('placa').value = vehicle.placa;
+                document.getElementById('precio').value = vehicle.precio;
+                
+                document.getElementById('formTitle').textContent = '✏️ Editar Vehículo';
+                editingId = id;
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (error) {
+                showAlert('Error al cargar el vehículo: ' + error.message, 'error');
+            }
+        }
+
+        // Cancelar edición
+        function cancelEdit() {
+            document.getElementById('vehicleForm').reset();
+            document.getElementById('vehicleId').value = '';
+            document.getElementById('formTitle').textContent = '➕ Agregar Nuevo Vehículo';
+            editingId = null;
+        }
+
+        // Eliminar vehículo
+        async function deleteVehicle(id) {
+            if (!confirm('¿Estás seguro de eliminar este vehículo?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    showAlert('Vehículo eliminado exitosamente');
+                    loadVehicles();
+                } else {
+                    showAlert('Error al eliminar el vehículo', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        // Formatear input de precio mientras se escribe
+        document.getElementById('precio').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^0-9]/g, '');
+            e.target.value = value;
+        });
+
+        // Cargar vehículos al iniciar
+        loadVehicles();
+    </script>
+</body>
+</html>
