@@ -1,0 +1,44 @@
+server:
+  port: 8086
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: veterinary-system
+  
+  # Thymeleaf configuration
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    mode: HTML
+  
+
+
+  data:
+    mongodb:
+      uri: mongodb+srv://johnceballosbel_db_user:EwWUe8hEbaKe9LOm@cluster.gbrxtsz.mongodb.net/VeterinariaAnimalCare?retryWrites=true&w=majority&appName=Cluster
+      auto-index-creation: true
+
+
+
+# Logging configuration
+logging:
+  level:
+    com.veterinary: DEBUG
+    org.springframework.web: INFO
+    org.hibernate: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Veterinaria AnimalCare - Sistema de Gestión</title>
+
+    <!-- Estilos embebidos (reconstrucción mínima estética similar al original) -->
+    <style>
+        :root{
+            --bg:#f7f5f3;
+            --card:#ffffff;
+            --accent:#b45309;
+            --text:#222;
+            --muted:#666;
+            --border:#e6e6e6;
+        }
+        *{box-sizing:border-box}
+        body{
+            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            margin:0;
+            background: linear-gradient(180deg,#fbfaf9 0%, #f1efe9 100%);
+            color:var(--text);
+            -webkit-font-smoothing:antialiased;
+        }
+        .container{max-width:1200px;margin:0 auto;padding:1rem;}
+        /* El estilo del header se toma del archivo style.css original */
+        .header-content{display:flex;align-items:center;gap:1rem;padding:.75rem 1rem;max-width:1200px;margin:0 auto;}
+        .logo-image{height:38px;}
+        .nav{display:flex;gap:.5rem;flex:1;}
+        .nav-link{padding:.5rem .75rem;border-radius:6px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:.5rem;}
+        .nav-link.active{background:rgba(180,83,9,.08);color:var(--accent);font-weight:600}
+        .mobile-menu-toggle{display:none;border:0;background:transparent}
+        .user-actions{display:flex;gap:.5rem}
+        .btn{display:inline-flex;align-items:center;gap:.5rem;border-radius:8px;padding:.5rem .75rem;border:1px solid transparent;background:var(--card);cursor:pointer}
+        .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+        .btn-outline{background:transparent;border-color:var(--accent);color:var(--accent)}
+        .btn-danger{background:#dc2626;color:#fff}
+        .btn-warning{background:#f59e0b;color:#fff}
+        .btn-secondary{background:#6b7280;color:#fff}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem;margin:1rem 0;box-shadow:0 6px 16px rgba(0,0,0,.03)}
+        .card-header{margin-bottom:.75rem}
+        .card-title{font-size:1.25rem;margin:0}
+        .card-subtitle{color:var(--muted);margin:0;font-size:.95rem}
+        .banner-section{position:relative;border-radius:12px;overflow:hidden}
+        .banner-image{width:100%;height:220px;object-fit:cover;opacity:.95}
+        .banner-overlay{position:absolute;left:0;right:0;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;padding:1.25rem;background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.28))}
+        .banner-title{font-size:1.8rem;margin:0}
+        .banner-subtitle{margin:.25rem 0;color:#ffe9d2}
+        .stats-section{display:flex;gap:1rem;justify-content:center;margin-top:1rem;flex-wrap:wrap}
+        .stats-section .card{text-align:center;padding:1rem;width:220px}
+        .description-section .feature-item{display:flex;gap:1rem;padding:.75rem;border-radius:8px;border:1px dashed transparent;cursor:pointer;margin:.5rem 0}
+        .description-section .feature-item:hover{background:linear-gradient(90deg,#fff8f0,#fff);border-color:rgba(180,83,9,.06)}
+        .feature-icon{width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:rgba(180,83,9,.08);border-radius:8px}
+        .form-group{margin-bottom:.75rem}
+        .form-label{display:block;margin-bottom:.25rem;font-weight:600}
+        .form-control{width:100%;padding:.5rem;border:1px solid var(--border);border-radius:6px;background:transparent}
+        .form-select{appearance:none}
+        .table{width:100%;border-collapse:collapse}
+        .table th,.table td{padding:.5rem .75rem;border-bottom:1px solid var(--border);text-align:left}
+        .table thead th{background:transparent;color:var(--muted)}
+        .table-container{overflow:auto}
+        .modal{position:fixed;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35)}
+        .modal-content{background:#fff;border-radius:10px;padding:1rem;max-width:540px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+        .modal-header{display:flex;justify-content:space-between;align-items:center}
+        .modal-footer{display:flex;gap:.5rem;justify-content:flex-end;margin-top:.5rem}
+        /* Unificar estilos de toast para que el texto siempre sea visible */
+        .toast{position:fixed;right:20px;bottom:20px;background:#fff;color:#111;padding:.75rem 1rem;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.2);z-index:20000}
+        .text-center{text-align:center}
+        .wizard-form .wizard-content{display:none}
+        .wizard-form .wizard-content.active{display:block}
+        .form-actions{display:flex;gap:.5rem;align-items:center;justify-content:flex-start;margin-top:.75rem}
+        .hidden{display:none}
+        @media(max-width:900px){
+            .nav{display:none}
+            .mobile-menu-toggle{display:block}
+            .header-content{padding:.5rem}
+            .stats-section{flex-direction:column;align-items:stretch}
+        }
+    </style>
+    <!-- Font Awesome (local, avoids tracking prevention warnings) -->
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <!-- Optional CDN fallback -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Estilos completos de la aplicación -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Componente reutilizable de modales (IIFE)
+         Se carga antes de los scripts inline para exponer window.ModalController -->
+    <script src="modal.js"></script>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header" id="mainHeader" style="display: none;">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="images/Logo.png" alt="VETERINARIA ANIMALCARE" class="logo-image">
+    </div>
+    </div>
+
+    <!-- Modal: Nueva Cita Médica -->
+    <div id="newAppointmentModal" class="modal" style="display:none">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-plus"></i> Agendar Nueva Cita Médica</h3>
+                <button type="button" class="close-btn" onclick="closeNewAppointmentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="newApptPet">Mascota</label>
+                    <select id="newApptPet" class="form-control"></select>
+                </div>
+                <div class="form-group" style="display:flex;gap:.75rem;flex-wrap:wrap">
+                    <div style="flex:1 1 160px">
+                        <label class="form-label" for="newApptDate">Fecha</label>
+                        <input type="date" id="newApptDate" class="form-control" />
+                    </div>
+                    <div style="flex:1 1 160px">
+                        <label class="form-label" for="newApptTime">Hora</label>
+                        <input type="time" id="newApptTime" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="newApptVet">Veterinario</label>
+                    <select id="newApptVet" class="form-control">
+                        <option value="">Selecciona un veterinario</option>
+                        <option value="dr_garcia">Dr. García</option>
+                        <option value="dra_martinez">Dra. Martínez</option>
+                        <option value="dr_rodriguez">Dr. Rodríguez</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="newApptReason">Motivo</label>
+                    <textarea id="newApptReason" class="form-control" rows="3" placeholder="Describe brevemente el motivo de la cita"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="newApptPriority">Prioridad</label>
+                    <select id="newApptPriority" class="form-control">
+                        <option value="normal">Normal</option>
+                        <option value="high">Alta</option>
+                        <option value="urgent">Urgente</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeNewAppointmentModal()"><i class="fas fa-times"></i> Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="saveNewAppointment()"><i class="fas fa-save"></i> Guardar Cita</button>
+            </div>
+        </div>
+    </div>
+
+            <nav class="nav" id="mainNav">
+                <a href="#inicio" class="nav-link active">
+                    <i class="fas fa-home"></i> Inicio
+                </a>
+                <a href="#registro" class="nav-link">
+                    <i class="fas fa-plus-circle"></i> Registro
+                </a>
+                <a href="#registros" class="nav-link">
+                    <i class="fas fa-list"></i> Registros
+                </a>
+                <a href="#citas-medicas" class="nav-link">
+                    <i class="fas fa-calendar-check"></i> Citas Médicas
+                </a>
+            </nav>
+
+            <!-- Menú hamburguesa para móvil -->
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <div class="user-actions">
+                <button onclick="logout()" class="btn btn-logout-header" title="Cerrar Sesión">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sistema de Autenticación -->
+    <div id="authContainer" class="auth-container container">
+        <div class="auth-wrapper">
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form">
+                <div class="auth-header">
+                    <div class="auth-logo">
+                        <div class="logo-icon">
+                            <img src="images/Logo.png" alt="VETERINARIA ANIMALCARE" class="logo-image">
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; justify-content:center; width:100%">
+                        <div style="text-align:center; width:100%">
+                            <h2>Iniciar Sesión</h2>
+                            <p>Accede a tu cuenta veterinaria</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="loginFormElement" class="auth-form-element" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="loginEmail">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="loginEmail" name="email" placeholder="tu@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="loginPassword">Contraseña</label>
+                        <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Tu contraseña" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="loginRole">Tipo de Usuario</label>
+                        <select class="form-control form-select" id="loginRole" name="role" required>
+                            <option value="">Selecciona tu rol</option>
+                            <option value="user">Usuario</option>
+                            <option value="veterinarian">Veterinario</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg auth-btn">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
+
+                    <div class="auth-switch">
+                        <p>¿No tienes cuenta? <a href="#" onclick="showRegisterForm(); return false;">Regístrate aquí</a></p>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="auth-form" style="display: none;">
+                <div class="auth-header">
+                    <div class="auth-logo">
+                        <div class="logo-icon">
+                            <img src="images/Logo.png" alt="VETERINARIA ANIMALCARE" class="logo-image">
+                        </div>
+                    </div>
+                    <h2>Crear Cuenta</h2>
+                    <p>Regístrate en el sistema veterinario</p>
+                </div>
+
+                <form id="registerFormElement" class="auth-form-element" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="registerName">Nombre Completo *</label>
+                        <input type="text" class="form-control" id="registerName" name="name" placeholder="Ej: Juan Pérez" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="registerEmail">Correo Electrónico *</label>
+                        <input type="email" class="form-control" id="registerEmail" name="email" placeholder="tu@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="registerPassword">Contraseña *</label>
+                        <input type="password" class="form-control" id="registerPassword" name="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="registerConfirmPassword">Confirmar Contraseña *</label>
+                        <input type="password" class="form-control" id="registerConfirmPassword" name="confirmPassword" placeholder="Repite tu contraseña" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="registerRole">Tipo de Usuario *</label>
+                        <select class="form-control form-select" id="registerRole" name="role" required>
+                            <option value="">Selecciona tu rol</option>
+                            <option value="user">Usuario</option>
+                            <option value="veterinarian">Veterinario</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="registerPhone">Teléfono *</label>
+                        <input type="tel" class="form-control" id="registerPhone" name="phone" placeholder="Ej: +57 300 123 4567" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg auth-btn">
+                        <i class="fas fa-user-plus"></i> Crear Cuenta
+                    </button>
+
+                    <div class="auth-switch">
+                        <p>¿Ya tienes cuenta? <a href="#" onclick="showLoginForm(); return false;">Inicia sesión aquí</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content (oculto hasta login) -->
+    <main class="main container" id="mainContent" style="display: none;">
+
+        <!-- Inicio Section -->
+        <section id="inicio" class="section active">
+            <!-- Banner Section -->
+            <div class="banner-section">
+                <img src="images/banner.png" alt="Veterinaria AnimalCare" class="banner-image">
+                <div class="banner-overlay">
+                    <h1 class="banner-title">¡Tu mascota merece el mejor cuidado!</h1>
+                    <p class="banner-subtitle">Sistema de gestión veterinaria para la materia de diseño de software</p>
+
+                    <!-- User Info in Banner -->
+                    <div class="banner-user-info" id="userInfo">
+                        <div class="banner-user-welcome">
+                            <div class="banner-user-avatar">
+                                <i class="fas fa-user-circle fa-2x"></i>
+                            </div>
+                            <div class="banner-user-details">
+                                <h3><span id="userName"></span></h3>
+                                <p class="banner-user-role"><span id="userRole"></span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Elegant Banner Decoration -->
+                    <div class="banner-decoration">
+                        <div class="decoration-line"></div>
+                        <div class="decoration-icon">
+                            <i class="fas fa-paw"></i>
+                        </div>
+                        <div class="decoration-line"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Cards removed per request -->
+
+            <!-- Description Section -->
+            <div class="description-section">
+                <div class="card">
+                    <h2 class="description-title">¿Qué puedes hacer en Veterinaria AnimalCare?</h2>
+                    <div class="description-content">
+                        <p class="description-text">
+                            Bienvenido a nuestro sistema de gestión veterinaria integral, pensado para ofrecerte una experiencia completa y eficiente en el cuidado de tus mascotas. Si te interesa alguno de los servicios que te presentaremos a continuación. Por favor da click sobre la descripción y se te llevará a la sección correspondiente.
+                        </p>
+
+                        <div class="description-features">
+                            <div class="feature-item" onclick="showSection('registro')" style="cursor: pointer;" title="Ir a registro de mascotas">
+                                <div class="feature-icon">
+                                    <i class="fas fa-paw"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h3>Registro de Mascotas</h3>
+                                    <p>Registra y gestiona el perfil completo de tus mascotas, incluyendo información médica, vacunas, historial clínico y datos del propietario. Mantén un registro detallado y actualizado de cada animal.</p>
+                                </div>
+                            </div>
+
+                            <div class="feature-item" onclick="showSection('citas-medicas')" style="cursor: pointer;" title="Gestionar consultas desde Citas Médicas">
+                                <div class="feature-icon">
+                                    <i class="fas fa-stethoscope"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h3>Consultas Integradas</h3>
+                                    <p>Las consultas ahora se gestionan desde Citas Médicas en un flujo unificado con edición y seguimiento.</p>
+                                </div>
+                            </div>
+
+                            <div class="feature-item" onclick="showAppointmentsSection()" style="cursor: pointer;" title="Gestionar citas médicas">
+                                <div class="feature-icon">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h3>Citas Médicas</h3>
+                                    <p>Organiza y programa citas médicas con diferentes niveles de prioridad. Los veterinarios pueden gestionar la agenda completa, asignar profesionales y establecer prioridades según la urgencia.</p>
+                                </div>
+                            </div>
+
+                            <div class="feature-item" onclick="showUserProfileModal()" style="cursor: pointer;" title="Ver perfil de usuario">
+                                <div class="feature-icon">
+                                    <i class="fas fa-users-cog"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h3>Control de Accesos</h3>
+                                    <p>Sistema de roles: los veterinarios gestionan citas y consultas; los usuarios registran mascotas y ven su información.</p>
+                                </div>
+                            </div>
+
+                            <div class="feature-item" onclick="animateStats()" style="cursor: pointer;" title="Ver estadísticas animadas">
+                                <div class="feature-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h3>Estadísticas y Reportes</h3>
+                                    <p>Visualiza estadísticas en tiempo real sobre mascotas registradas, citas programadas, consultas realizadas y otros indicadores importantes para el funcionamiento de la clínica.</p>
+                                </div>
+                            </div>
+
+                            <div class="feature-item" onclick="showSecurityModal()" style="cursor: pointer;" title="Información de seguridad">
+                                <div class="feature-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h3>Seguridad y Privacidad</h3>
+                                    <p>Protección completa de datos médicos y personales con encriptación segura. Cada usuario solo puede acceder a la información autorizada según su rol en el sistema.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Registro Section -->
+        <section id="registro" class="section">
+            <div class="card">
+                <div class="card-header" style="position: relative;">
+                    <h1 class="card-title">Registro de Nueva Mascota</h1>
+                    <p class="card-subtitle">Complete la información paso a paso para registrar una nueva mascota</p>
+
+                    <!-- Botón de navegación independiente -->
+                    <div style="position: absolute; top: 15px; right: 20px;">
+                        <button onclick="showSection('inicio')" class="btn btn-outline" style="background: rgba(255,255,255,0.9); border: 2px solid #b45309; color: #b45309; font-weight: bold; padding: 8px 16px; transition: all 0.3s ease;">
+                            <i class="fas fa-home"></i>
+                            Volver al Inicio
+                        </button>
+                    </div>
+                </div>
+
+                <form id="registroForm" class="registro-form wizard-form show-all" onsubmit="return false;">
+                    <!-- Paso 1: Información Básica -->
+                    <div class="wizard-content active" data-step="1">
+                        <div class="step-header">
+                            <h2><i class="fas fa-paw"></i> Información Básica</h2>
+                            <p>Comencemos con los datos esenciales de tu mascota</p>
+                        </div>
+
+                        <div class="form-grid" style="display:flex;gap:1rem;">
+                            <div style="flex:1">
+                                <div class="form-group">
+                                    <label class="form-label" for="name">Nombre de la Mascota *</label>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Ej: Max, Luna, Piolín..." required>
+                                    <div class="field-help">El nombre que usas para llamar a tu mascota</div>
+                                </div>
+                            </div>
+
+                            <div style="flex:1">
+                                <div class="form-group">
+                                    <label class="form-label" for="family_type">Tipo de Familia *</label>
+                                    <select class="form-control form-select" id="family_type" name="familyType" required>
+                                        <option value="">Seleccione una familia</option>
+                                        <option value="domestic">Doméstica</option>
+                                        <option value="exotic">Exótica</option>
+                                    </select>
+                                    <div class="field-help">Doméstica: perros, gatos. Exótica: reptiles, aves exóticas</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paso 2: Detalles del Animal -->
+                    <div class="wizard-content" data-step="2">
+                        <div class="step-header">
+                            <h2><i class="fas fa-info-circle"></i> Detalles del Animal</h2>
+                            <p>Información específica sobre la especie y características</p>
+                        </div>
+
+                        <div class="form-grid" style="display:flex;gap:1rem;">
+                            <div style="flex:1">
+                                <div class="form-group">
+                                    <label class="form-label" for="animal_type">Tipo de Animal *</label>
+                                    <select class="form-control form-select" id="animal_type" name="animalType" required>
+                                        <option value="">Seleccione un tipo</option>
+                                        <option value="dog">Perro</option>
+                                        <option value="cat">Gato</option>
+                                        <option value="bird">Ave</option>
+                                        <option value="reptile">Reptil</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div style="flex:1">
+                                <div class="form-group">
+                                    <label class="form-label" for="breed">Raza *</label>
+                                    <select class="form-control form-select" id="breed" name="breed" required>
+                                        <option value="">Selecciona una raza</option>
+                                    </select>
+                                    <input type="text" class="form-control" id="breed_input" name="breed_input" placeholder="Escribe la raza manualmente..." style="display: none;">
+                                </div>
+                            </div>
+
+                            <div style="flex:1">
+                                <div class="form-group">
+                                    <label class="form-label" for="age">Edad (años) *</label>
+                                    <input type="number" class="form-control" id="age" name="age" min="0" max="30" placeholder="Ej: 3" required>
+                                    <div class="field-help">Si no conoces la edad exacta, puedes aproximar</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paso 3: Información del Propietario -->
+                    <div class="wizard-content" data-step="3">
+                        <div class="step-header">
+                            <h2><i class="fas fa-user"></i> Información del Propietario</h2>
+                            <p>Datos de contacto del responsable de la mascota</p>
+                        </div>
+
+                        <div class="form-grid" style="display:flex;gap:1rem;">
+                            <div style="flex:1">
+                                <div class="form-group">
+                                    <label class="form-label" for="owner_name">Nombre Completo *</label>
+                                    <input type="text" class="form-control" id="owner_name" name="ownerName" placeholder="Ej: Juan Pérez García" required>
+                                </div>
+                            </div>
+
+                            <div style="flex:1">
+                                <div class="form-group">
+                                    <label class="form-label" for="owner_phone">Teléfono *</label>
+                                    <input type="tel" class="form-control" id="owner_phone" name="ownerPhone" placeholder="Ej: +57 300 123 4567" required>
+                                    <div class="field-help">Incluye código de país para mejor contacto</div>
+                                </div>
+                            </div>
+
+                            <div style="flex:1">
+                                <div class="form-group">
+                                    <label class="form-label" for="owner_email">Email</label>
+                                    <input type="email" class="form-control" id="owner_email" name="ownerEmail" placeholder="Ej: juan@email.com">
+                                    <div class="field-help">Para envío de recordatorios y resultados</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Guardado directo -->
+                    <div class="wizard-navigation" style="display: none;"></div>
+
+                    <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
+                        <button type="button" id="savePetDirectBtn" class="btn btn-success wizard-btn">
+                            <i class="fas fa-save"></i>
+                            <span class="btn-text">Guardar Mascota</span>
+                        </button>
+                    </div>
+
+                    <!-- Botones adicionales -->
+                    <div class="form-actions" style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+                        <button type="button" onclick="showSection('registros')" class="btn btn-outline">
+                            <i class="fas fa-list"></i> Ver Registros
+                        </button>
+                        <button type="button" onclick="window.testRegisterPet && window.testRegisterPet()" class="btn btn-warning">
+                            <i class="fas fa-bug"></i> Test Sistema
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Modal de resultado de guardado -->
+                <div id="saveResultModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="saveResultTitle">Resultado del guardado</h3>
+                            <button class="modal-close" onclick="closeSaveResultModal()"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="saveResultMessage"></p>
+                        </div>
+                        <div class="modal-actions" style="display: flex; gap: .75rem; justify-content: flex-end;">
+                            <button id="retrySaveBtn" class="btn btn-primary" style="display: none;">Volver a intentar</button>
+                            <button id="closeSaveModalBtn" class="btn btn-outline" onclick="closeSaveResultModal()">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Registros Section -->
+        <section id="registros" class="section">
+            <div class="card">
+                <div class="card-header" style="position: relative;">
+                    <h1 class="card-title">Registros de Mascotas</h1>
+                    <p class="card-subtitle">Lista de todas las mascotas registradas en el sistema</p>
+
+                    <!-- Barra de búsqueda por nombre -->
+                    <div class="searchbar" style="margin-top: 12px; display: flex; gap: 8px; align-items: center;">
+                        <input type="text" id="petSearchInput" class="form-control" placeholder="Buscar por nombre de mascota..." oninput="filterPetsByName()" />
+                        <button type="button" id="petSearchBtn" class="btn btn-outline" onclick="filterPetsByName()" title="Buscar">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+
+                    <!-- Botón de navegación independiente -->
+                    <div style="position: absolute; top: 15px; right: 20px;">
+                        <button onclick="showSection('inicio')" class="btn btn-outline" style="background: rgba(255,255,255,0.9); border: 2px solid #b45309; color: #b45309; font-weight: bold; padding: 8px 16px; transition: all 0.3s ease;">
+                            <i class="fas fa-home"></i> Volver al Inicio
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Botones de navegación -->
+                <div class="form-actions" style="margin-bottom: 20px;">
+                    <button onclick="showSection('registro')" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus-circle"></i> Registrar Nueva Mascota
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Edad</th>
+                                <th>Raza</th>
+                                <th>Tipo</th>
+                                <th>Familia</th>
+                                <th>Propietario</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="petsTableBody">
+                            <!-- Los registros se cargarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Citas Médicas Section -->
+        <section id="citas-medicas" class="section">
+            <div class="card">
+                <div class="card-header" style="position: relative;">
+                    <h1 class="card-title"><i class="fas fa-calendar-check"></i> Gestión de Citas Médicas</h1>
+                    <p class="card-subtitle">Administra y visualiza todas las citas programadas</p>
+
+                    <div style="position: absolute; top: 15px; right: 20px;">
+                        <button onclick="showSection('inicio')" class="btn btn-outline" style="background: rgba(255,255,255,0.9); border: 2px solid #b45309; color: #b45309; font-weight: bold; padding: 8px 16px; transition: all 0.3s ease;">
+                            <i class="fas fa-home"></i> Volver al Inicio
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- Acciones -->
+                    <div class="actions" style="display:flex;gap:.5rem;margin-bottom:1rem">
+                        <button id="btnNewAppointment" class="btn btn-primary"><i class="fas fa-plus"></i> Nueva Cita Médica</button>
+                    </div>
+
+                    <!-- Filtros y búsqueda -->
+                    <div class="filters-section" style="display:flex;gap:1rem;flex-wrap:wrap;">
+                        <div class="filter-group">
+                            <label for="filterStatus">Filtrar por Estado:</label>
+                            <select id="filterStatus" class="form-control form-select">
+                                <option value="">Todos los estados</option>
+                                <option value="scheduled">Programadas</option>
+                                <option value="completed">Completadas</option>
+                                <option value="cancelled">Canceladas</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filterVet">Filtrar por Veterinario:</label>
+                            <select id="filterVet" class="form-control form-select">
+                                <option value="">Todos los veterinarios</option>
+                                <option value="dr_garcia">Dr. García</option>
+                                <option value="dra_martinez">Dra. Martínez</option>
+                                <option value="dr_rodriguez">Dr. Rodríguez</option>
+                            </select>
+                        </div>
+
+                        <button onclick="applyFilters()" class="btn btn-primary">
+                            <i class="fas fa-filter"></i> Aplicar Filtros
+                        </button>
+                    </div>
+
+                    
+
+                    <!-- Lista de citas -->
+                    <div class="table-container" style="margin-top:1rem">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th><th>Mascota</th><th>Dueño</th><th>Fecha</th><th>Hora</th>
+                                    <th>Veterinario</th><th>Motivo</th><th>Prioridad</th><th>Estado</th><th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointmentsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Consultas Veterinarias Section eliminado: funcionalidad integrada en Citas Médicas -->
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p>&copy; 2025 Veterinaria AnimalCare. Sistema de gestión veterinaria.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Modal de confirmación de eliminación -->
+    <div id="deleteModal" class="modal" style="display:none">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h3>
+                <button class="close-btn" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que quieres eliminar esta mascota?</p>
+                <div class="pet-info">
+                    <p><strong>Nombre:</strong> <span id="deletePetName"></span></p>
+                    <p><strong>Dueño:</strong> <span id="deletePetOwner"></span></p>
+                </div>
+                <p class="warning-text">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()"><i class="fas fa-times"></i> Cancelar</button>
+                <button class="btn btn-danger" onclick="confirmDelete()"><i class="fas fa-trash"></i> Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal: Cancelar Cita Médica (llamativo) -->
+    <div id="cancelAppointmentModal" class="modal" style="display:none">
+        <div class="modal-content">
+            <div class="modal-header" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;">
+                <h3><i class="fas fa-ban"></i> Cancelar Cita Médica</h3>
+                <button class="close-btn" onclick="closeCancelAppointmentModal()" style="color:#fff">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Confirmar cancelación de la cita seleccionada.</p>
+                <div class="pet-info">
+                    <p><strong>Mascota:</strong> <span id="cancelApptPetName">—</span></p>
+                    <p><strong>Dueño:</strong> <span id="cancelApptOwner">—</span></p>
+                    <p><strong>Fecha:</strong> <span id="cancelApptDate">—</span> <strong>Hora:</strong> <span id="cancelApptTime">—</span></p>
+                    <p><strong>Veterinario:</strong> <span id="cancelApptVet">—</span></p>
+                </div>
+                <p class="warning-text">Esta acción eliminará la cita.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCancelAppointmentModal()"><i class="fas fa-times"></i> Volver</button>
+                <button class="btn btn-danger" onclick="confirmCancelAppointment()"><i class="fas fa-ban"></i> Confirmar cancelación</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de edición de citas -->
+    <div id="editAppointmentModal" class="modal" style="display:none">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Editar Cita Médica</h3>
+                <button class="close-btn" onclick="closeEditAppointmentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Estado actual:</label>
+                    <p id="currentAppointmentStatus" class="current-status"></p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="newAppointmentStatus">Nuevo estado:</label>
+                    <select id="newAppointmentStatus" class="form-control">
+                        <option value="scheduled">Programada</option>
+                        <option value="completed">Completada</option>
+                        <option value="cancelled">Cancelada</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditAppointmentModal()"><i class="fas fa-times"></i> Cancelar</button>
+                <button class="btn btn-primary" onclick="saveAppointmentEdit()"><i class="fas fa-save"></i> Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de edición de mascota -->
+    <div id="editPetModal" class="modal" style="display:none">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Editar Mascota</h3>
+                <button class="close-btn" onclick="closeEditPetModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid" style="display:flex;gap:1rem;flex-wrap:wrap">
+                    <div style="flex:1;min-width:240px">
+                        <div class="form-group">
+                            <label class="form-label" for="editPetName">Nombre *</label>
+                            <input id="editPetName" class="form-control" type="text" required />
+                        </div>
+                    </div>
+                    <div style="flex:1;min-width:160px">
+                        <div class="form-group">
+                            <label class="form-label" for="editPetAge">Edad *</label>
+                            <input id="editPetAge" class="form-control" type="number" min="0" max="30" required />
+                        </div>
+                    </div>
+                    <div style="flex:1;min-width:240px">
+                        <div class="form-group">
+                            <label class="form-label" for="editPetBreed">Raza *</label>
+                            <input id="editPetBreed" class="form-control" type="text" required />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-grid" style="display:flex;gap:1rem;flex-wrap:wrap">
+                    <div style="flex:1;min-width:220px">
+                        <div class="form-group">
+                            <label class="form-label" for="editPetType">Tipo de Animal *</label>
+                            <select id="editPetType" class="form-control form-select" required>
+                                <option value="dog">Perro</option>
+                                <option value="cat">Gato</option>
+                                <option value="bird">Ave</option>
+                                <option value="reptile">Reptil</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="flex:1;min-width:220px">
+                        <div class="form-group">
+                            <label class="form-label" for="editPetFamily">Tipo de Familia *</label>
+                            <select id="editPetFamily" class="form-control form-select" required>
+                                <option value="domestic">Doméstica</option>
+                                <option value="exotic">Exótica</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-grid" style="display:flex;gap:1rem;flex-wrap:wrap">
+                    <div style="flex:1;min-width:240px">
+                        <div class="form-group">
+                            <label class="form-label" for="editOwnerName">Propietario *</label>
+                            <input id="editOwnerName" class="form-control" type="text" required />
+                        </div>
+                    </div>
+                    <div style="flex:1;min-width:220px">
+                        <div class="form-group">
+                            <label class="form-label" for="editOwnerPhone">Teléfono</label>
+                            <input id="editOwnerPhone" class="form-control" type="tel" />
+                        </div>
+                    </div>
+                    <div style="flex:1;min-width:240px">
+                        <div class="form-group">
+                            <label class="form-label" for="editOwnerEmail">Email</label>
+                            <input id="editOwnerEmail" class="form-control" type="email" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditPetModal()"><i class="fas fa-times"></i> Cancelar</button>
+                <button class="btn btn-primary" onclick="saveEditPet()"><i class="fas fa-save"></i> Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script reconstruido (sustituye app.js perdido) -->
+    <script>
+    /**************************************************************************
+     * Reconstrucción del comportamiento JS principal
+     * Contiene:
+     *  - Autenticación simple (localStorage)
+     *  - Mostrar/ocultar secciones
+     *  - Registro y listado de mascotas (localStorage)
+     *  - Gestión básica de citas y consultas (localStorage)
+     *  - Toasts y modales
+     **************************************************************************/
+
+    (function(){
+        // --- Datos guardados localmente ---
+        const STORAGE_KEYS = {
+            USERS: 'vet_users_v1',
+            SESS: 'vet_session_v1',
+            PETS: 'vet_pets_v1',
+            APPTS: 'vet_appts_v1',
+            CONSULTS: 'vet_consults_v1'
+        };
+
+        // --- API Client (MongoDB backend) ---
+        const API_BASE = 'http://localhost:8085/api';
+        async function apiFetch(path, options = {}){
+            const resp = await fetch(API_BASE + path, {
+                headers: { 'Content-Type': 'application/json' },
+                ...options
+            });
+            const isJson = (resp.headers.get('content-type') || '').includes('application/json');
+            const data = isJson ? await resp.json() : await resp.text();
+            if(!resp.ok){ throw new Error(typeof data === 'string' ? data : (data.error || 'Error de API')); }
+            return data;
+        }
+        async function loadPetsFromApiAndCache(){
+            try{
+                const pets = await apiFetch('/pets');
+                savePets(Array.isArray(pets) ? pets : []);
+            }catch(e){
+                console.warn('No se pudieron cargar mascotas desde API. Operación requiere MongoDB activo.', e.message);
+                showToast('Backend no disponible. Activa MongoDB y el servidor');
+                // Modo solo-Mongo: no usamos datos de localStorage como fuente
+                savePets([]);
+            }
+        }
+        async function loadApptsFromApiAndCache(){
+            try{
+                const appts = await apiFetch('/appointments');
+                saveAppts(Array.isArray(appts) ? appts : []);
+            }catch(e){ console.warn('No se pudieron cargar citas desde API, usando cache/localStorage', e.message); }
+        }
+
+        // --- Datos por defecto (si no existen) ---
+        function ensureDefaults(){
+            if(!localStorage.getItem(STORAGE_KEYS.USERS)){
+                const defaultUsers = [
+                    { username:'veterinarian@vet.com', name:'Veterinario', password:'veterinario123', role:'veterinarian', phone:''},
+                    { username:'user@vet.com', name:'Usuario', password:'user123', role:'user', phone:''}
+                ];
+                localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(defaultUsers));
+            }
+            if(!localStorage.getItem(STORAGE_KEYS.PETS)) localStorage.setItem(STORAGE_KEYS.PETS, JSON.stringify([]));
+            if(!localStorage.getItem(STORAGE_KEYS.APPTS)) localStorage.setItem(STORAGE_KEYS.APPTS, JSON.stringify([]));
+            if(!localStorage.getItem(STORAGE_KEYS.CONSULTS)) localStorage.setItem(STORAGE_KEYS.CONSULTS, JSON.stringify([]));
+        }
+
+        ensureDefaults();
+
+        // --- Utilidades DOM ---
+        function $(sel){ return document.querySelector(sel); }
+        function $all(sel){ return Array.from(document.querySelectorAll(sel)); }
+function show(el){
+    if(!el) return;
+    const isModal = el.classList && el.classList.contains('modal');
+    if (isModal){
+        el.style.display = 'flex';
+        el.classList.add('open');
+    } else {
+        el.style.display = 'block';
+    }
+}
+function hide(el){
+    if(!el) return;
+    const isModal = el.classList && el.classList.contains('modal');
+    if (isModal){
+        el.classList.remove('open');
+    }
+    el.style.display = 'none';
+}
+        function showToast(msg, timeout=3000){ 
+            const t = document.createElement('div'); t.className='toast'; t.innerText = msg;
+            document.body.appendChild(t);
+            setTimeout(()=> t.style.opacity = '1', 10);
+            setTimeout(()=> { t.remove(); }, timeout);
+        }
+
+        // --- Session / Auth ---
+        function saveUsers(users){ localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users)); }
+        function getUsers(){ return JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]'); }
+        function saveSession(session){ localStorage.setItem(STORAGE_KEYS.SESS, JSON.stringify(session)); }
+        function getSession(){ return JSON.parse(localStorage.getItem(STORAGE_KEYS.SESS) || 'null'); }
+        function clearSession(){ localStorage.removeItem(STORAGE_KEYS.SESS); }
+
+        // --- Permisos por rol (solo UI) ---
+        function normalizeRole(r){
+            const v = String(r || '').toLowerCase();
+            if(['user','usuario','role_user'].includes(v)) return 'user';
+            if(['veterinarian','vet','veterinario','role_veterinarian'].includes(v)) return 'veterinarian';
+            return v || 'user';
+        }
+        function getCurrentRole(){ const s = getSession(); return normalizeRole((s && s.role) ? s.role : 'user'); }
+        function applyRolePermissions(role){
+            role = normalizeRole(role);
+            // Ocultar nav "Registros" para usuarios
+            const registrosNav = document.querySelector('.nav a[href="#registros"]');
+            if(registrosNav){ registrosNav.style.display = (role === 'user') ? 'none' : ''; }
+            // Ocultar botones "Ver Registros" en Registro para usuarios
+            document.querySelectorAll('button[onclick="showSection(\'registros\')"]').forEach(btn => {
+                btn.style.display = (role === 'user') ? 'none' : '';
+            });
+            // Por consistencia, si ya estuviera visible la sección Registros siendo usuario, redirigimos
+            const activeReg = document.getElementById('registros');
+            if(role === 'user' && activeReg && activeReg.classList.contains('active')){
+                showSection('inicio');
+            }
+        }
+
+        // --- Pets ---
+        function savePets(list){ localStorage.setItem(STORAGE_KEYS.PETS, JSON.stringify(list)); }
+        function getPets(){ return JSON.parse(localStorage.getItem(STORAGE_KEYS.PETS) || '[]'); }
+
+        // --- Appointments (citas) ---
+        function saveAppts(list){ localStorage.setItem(STORAGE_KEYS.APPTS, JSON.stringify(list)); }
+        function getAppts(){ return JSON.parse(localStorage.getItem(STORAGE_KEYS.APPTS) || '[]'); }
+
+        // --- Consultations ---
+        function saveConsults(list){ localStorage.setItem(STORAGE_KEYS.CONSULTS, JSON.stringify(list)); }
+        function getConsults(){ return JSON.parse(localStorage.getItem(STORAGE_KEYS.CONSULTS) || '[]'); }
+
+        // --- Controladores de modales reutilizables ---
+        const modalDeleteCtrl = new window.ModalController('#deleteModal', { backdropClickClose: true });
+        const editAppointmentCtrl = new window.ModalController('#editAppointmentModal', { backdropClickClose: true });
+        const newAppointmentCtrl = new window.ModalController('#newAppointmentModal', { backdropClickClose: true });
+        const cancelApptCtrl = new window.ModalController('#cancelAppointmentModal', { backdropClickClose: true });
+
+        // --- Mostrar/ocultar secciones ---
+        function showSection(id){
+            // Gating: usuarios no pueden acceder a "Registros"
+            const role = getCurrentRole();
+            if(id === 'registros' && role === 'user'){
+                showToast('No tienes permiso para ver registros de mascotas');
+                id = 'inicio';
+            }
+            // if user not logged in and tries to access other than inicio/registro? handled elsewhere
+            const sections = $all('main .section');
+            sections.forEach(s=> s.classList.remove('active'));
+            sections.forEach(s=> s.style.display = 'none');
+            const target = document.getElementById(id);
+            if(target){
+                target.style.display = 'block';
+                target.classList.add('active');
+            }
+            // update nav active
+            $all('.nav-link').forEach(a => a.classList.remove('active'));
+            const navItem = document.querySelector('.nav a[href="#'+id+'"]');
+            if(navItem) navItem.classList.add('active');
+            // scroll top
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+
+        // Mobile menu basic
+        function toggleMobileMenu(){
+            const nav = document.getElementById('mainNav');
+            if(nav.style.display === 'flex' || nav.style.display === '') nav.style.display = 'none';
+            else nav.style.display = 'flex';
+        }
+
+        // --- Login / Register handlers ---
+        window.handleLogin = async function handleLogin(e){
+            e.preventDefault();
+            const email = $('#loginEmail').value.trim();
+            const pass = $('#loginPassword').value;
+            const role = $('#loginRole').value;
+            // Intentar login contra API
+            try{
+                const user = await apiFetch('/auth/login', { method:'POST', body: JSON.stringify({ email, password: pass }) });
+                saveSession({ username:user.email, name:user.name, role:user.role });
+                await onLogin();
+                showToast('Inicio de sesión correcto');
+                return;
+            }catch(err){
+                console.warn('Fallo login API, se intenta localStorage:', err.message);
+            }
+            // Fallback local
+            const users = getUsers();
+            const user = users.find(u => u.username.toLowerCase() === email.toLowerCase() && u.password === pass && u.role === role);
+            if(user){
+                saveSession({username:user.username, name:user.name, role:user.role});
+                await onLogin();
+                showToast('Inicio de sesión correcto');
+            } else {
+                showToast('Credenciales incorrectas');
+            }
+        };
+
+        window.handleRegister = async function handleRegister(e){
+            e.preventDefault();
+            const name = $('#registerName').value.trim();
+            const email = $('#registerEmail').value.trim();
+            const password = $('#registerPassword').value;
+            const confirm = $('#registerConfirmPassword').value;
+            const role = $('#registerRole').value;
+            const phone = $('#registerPhone').value.trim();
+            if(password !== confirm){ showToast('Las contraseñas no coinciden'); return; }
+            // Intentar registro en API
+            try{
+                await apiFetch('/auth/register', { method:'POST', body: JSON.stringify({ name, email, password, role, phone }) });
+                showToast('Cuenta creada correctamente. Inicia sesión');
+                showLoginForm();
+                return;
+            }catch(err){ console.warn('Registro API falló, se usa localStorage:', err.message); }
+            // Fallback local
+            const users = getUsers();
+            if(users.find(u => u.username.toLowerCase() === email.toLowerCase())){ showToast('Usuario ya registrado'); return; }
+            users.push({ username: email, name, password, role, phone });
+            saveUsers(users);
+            showToast('Cuenta creada correctamente. Inicia sesión');
+            showLoginForm();
+        };
+
+        async function onLogin(){
+            const sess = getSession();
+            if(!sess) return;
+            // hide auth container and show main
+            hide($('#authContainer'));
+            show($('#mainContent'));
+            show($('#mainHeader'));
+            $('#userName').innerText = sess.name || sess.username;
+            const roleMap = { veterinarian: 'Veterinario', user: 'Usuario' };
+            const normalized = getCurrentRole();
+            $('#userRole').innerText = roleMap[normalized] ? roleMap[normalized] : (sess.role || '').toUpperCase();
+            // Aplicar permisos UI según rol
+            applyRolePermissions(normalized);
+            // Cargar datos desde API a cache y renderizar
+            await loadPetsFromApiAndCache();
+            await loadApptsFromApiAndCache();
+            // load pets into selects and table
+            renderPetsTable();
+            populatePetOptions();
+            renderAppointments();
+            renderConsultations();
+            updateStats();
+        }
+
+        window.logout = function logout(){
+            clearSession();
+            // hide main, show auth
+            hide($('#mainContent'));
+            hide($('#mainHeader'));
+            show($('#authContainer'));
+            showLoginForm();
+            showToast('Sesión cerrada');
+        };
+
+        function showLoginForm(){
+            hide($('#registerForm'));
+            show($('#loginForm'));
+        }
+        function showRegisterForm(){
+            hide($('#loginForm'));
+            show($('#registerForm'));
+        }
+
+        // --- Pets functions ---
+        function nextId(prefix){
+            return prefix + '_' + Math.random().toString(36).slice(2,9);
+        }
+
+        function renderPetsTable(filter=''){
+            const tbody = $('#petsTableBody');
+            const pets = getPets();
+            tbody.innerHTML = '';
+            const list = filter ? pets.filter(p => p.name.toLowerCase().includes(filter.toLowerCase())) : pets;
+            if(list.length === 0){
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center">No hay mascotas registradas</td></tr>';
+                const totalPetsEl0 = $('#totalPets'); if(totalPetsEl0) totalPetsEl0.innerText = 0;
+                return;
+            }
+            list.forEach(p=>{
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${p.id}</td>
+                    <td>${escapeHtml(p.name)}</td>
+                    <td>${p.age ?? ''}</td>
+                    <td>${escapeHtml(p.breed ?? '')}</td>
+                    <td>${escapeHtml(p.type ?? '')}</td>
+                    <td>${escapeHtml(p.familyType ?? '')}</td>
+                    <td>${escapeHtml(p.ownerName ?? '')}</td>
+                    <td style="white-space:nowrap">
+                        <button class="btn btn-outline" onclick="viewPet('${p.id}')"><i class="fas fa-eye"></i></button>
+                        <button class="btn" onclick="editPet('${p.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger" onclick="askDeletePet('${p.id}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            const totalPetsEl = $('#totalPets'); if(totalPetsEl) totalPetsEl.innerText = pets.length;
+        }
+
+        function escapeHtml(str){ if(!str) return ''; return String(str).replace(/[&<>"]/g, c=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]); }
+
+        // Save pet from registro form
+        document.addEventListener('DOMContentLoaded', () => {
+            const saveBtn = document.getElementById('savePetDirectBtn');
+            if(saveBtn) saveBtn.addEventListener('click', savePetFromForm);
+            const newApptBtn = document.getElementById('btnNewAppointment');
+            if(newApptBtn) newApptBtn.addEventListener('click', openNewAppointmentModal);
+            // animal->raza logic
+            const animalType = document.getElementById('animal_type');
+            if(animalType){
+                animalType.addEventListener('change', function(){
+                    populateBreedOptions(this.value);
+                });
+            }
+            // breed_toggle
+            const breedSelect = document.getElementById('breed');
+            const breedInput = document.getElementById('breed_input');
+            if(breedSelect) breedSelect.addEventListener('change', function(){
+                if(this.value === 'other'){ this.style.display='none'; breedInput.style.display='block'; breedInput.focus(); }
+            });
+
+            // clickable header nav (smooth)
+            $all('.nav-link').forEach(a => a.addEventListener('click', (ev)=>{
+                ev.preventDefault();
+                const href = a.getAttribute('href').replace('#','');
+                showSection(href);
+            }));
+
+
+            // load session if exists
+            const sess = getSession();
+            if(sess) { applyRolePermissions(sess.role); onLogin(); }
+        });
+
+        async function savePetFromForm(){
+            try{
+                const name = $('#name').value.trim();
+                const familyType = $('#family_type').value;
+                const animalType = $('#animal_type').value;
+                const breed = (document.getElementById('breed').value === 'other') ? document.getElementById('breed_input').value.trim() : document.getElementById('breed').value;
+                const age = $('#age').value;
+                const ownerName = $('#owner_name').value.trim();
+                const ownerPhone = $('#owner_phone').value.trim();
+                const ownerEmail = $('#owner_email').value.trim();
+
+                if(!name || !familyType || !animalType || !ownerName) { showToast('Completa los campos obligatorios'); return; }
+                const payload = { name, familyType, type:animalType, breed, age: parseInt(age||'0',10), ownerName, ownerPhone, ownerEmail };
+                // Actualización optimista inmediata (solo UI, revertible)
+                const tempId = nextId('pet');
+                const optimisticPet = { id: tempId, ...payload, createdAt: new Date().toISOString() };
+                const petsNow = getPets(); petsNow.push(optimisticPet); savePets(petsNow);
+                showToast('Mascota registrada');
+                renderPetsTable();
+                populatePetOptions();
+                // Sincronizar con API; si falla, revertimos el estado local
+                apiFetch('/pets', { method:'POST', body: JSON.stringify(payload) })
+                    .then(created => {
+                        const pets = getPets();
+                        const idx = pets.findIndex(p => p.id === tempId);
+                        if(idx !== -1){ pets[idx] = created; savePets(pets); renderPetsTable(); populatePetOptions(); }
+                    })
+                    .catch(err => {
+                        console.warn('Fallo al guardar en API, revertimos creación local:', err.message);
+                        const pets = getPets().filter(p => p.id !== tempId);
+                        savePets(pets);
+                        renderPetsTable();
+                        populatePetOptions();
+                        showToast('Error al guardar en backend. No se creó la mascota');
+                    });
+                // reset form (keep to minimal)
+                $('#registroForm').reset?.();
+            }catch(err){
+                console.error(err);
+                showToast('Error al guardar mascota');
+            }
+        }
+
+        // populate breed options based on animal type (basic)
+        function populateBreedOptions(type){
+            const breeds = {
+                dog: ['Labrador','Pastor Alemán','Bulldog','Otro'],
+                cat: ['Persa','Siamés','Maine Coon','Otro'],
+                bird: ['Canario','Loro','Periquito','Otro'],
+                reptile: ['Iguana','Serpiente','Tortuga','Otro']
+            };
+            const sel = document.getElementById('breed');
+            if(!sel) return;
+            sel.innerHTML = '<option value="">Selecciona una raza</option>';
+            const list = breeds[type] || [];
+            list.forEach(b => {
+                const v = (b === 'Otro') ? 'other' : b;
+                const opt = document.createElement('option'); opt.value = v; opt.innerText = b;
+                sel.appendChild(opt);
+            });
+            // show breed_input false
+            document.getElementById('breed_input').style.display = 'none';
+            sel.style.display = '';
+        }
+
+        function populatePetOptions(){
+            const sel = document.getElementById('consultationPet');
+            if(!sel) return;
+            sel.innerHTML = '<option value="">Selecciona una mascota</option>';
+            const pets = getPets();
+            pets.forEach(p => {
+                const opt = document.createElement('option'); opt.value = p.id; opt.innerText = `${p.name} (${p.ownerName || ''})`;
+                sel.appendChild(opt);
+            });
+        }
+
+        // --- Pet view / edit / delete placeholders ---
+        let petToDeleteId = null;
+        function viewPet(id){
+            const pets = getPets(); const pet = pets.find(p=>p.id===id); if(!pet) return;
+            // Muestra un resumen en toast para mantener consistencia
+            const resumen = `Nombre: ${pet.name} · Raza: ${pet.breed} · Edad: ${pet.age} · Tipo: ${pet.type} · Propietario: ${pet.ownerName}`;
+            showToast(resumen);
+        }
+        function editPet(id){
+            // Abrir modal de edición y poblar campos
+            openEditPetModal(id);
+        }
+
+        // --- Modal de edición de mascota ---
+        function openEditPetModal(id){
+            const pets = getPets(); const pet = pets.find(p=>p.id===id); if(!pet) return;
+            const modal = document.getElementById('editPetModal');
+            modal.dataset.editing = id;
+            document.getElementById('editPetName').value = pet.name || '';
+            document.getElementById('editPetAge').value = pet.age ?? '';
+            document.getElementById('editPetBreed').value = pet.breed || '';
+            document.getElementById('editPetType').value = pet.type || '';
+            document.getElementById('editPetFamily').value = pet.familyType || '';
+            document.getElementById('editOwnerName').value = pet.ownerName || '';
+            document.getElementById('editOwnerPhone').value = pet.ownerPhone || '';
+            document.getElementById('editOwnerEmail').value = pet.ownerEmail || '';
+            // Centrar modal
+            modal.style.display = 'flex';
+        }
+        function closeEditPetModal(){
+            const modal = document.getElementById('editPetModal');
+            modal.style.display = 'none';
+            delete modal.dataset.editing;
+        }
+        async function saveEditPet(){
+            const modal = document.getElementById('editPetModal');
+            const id = modal.dataset.editing;
+            if(!id) { closeEditPetModal(); return; }
+            const pets = getPets();
+            const idx = pets.findIndex(p=>p.id===id);
+            if(idx === -1){ closeEditPetModal(); return; }
+            const payload = {
+                name: document.getElementById('editPetName').value.trim(),
+                age: parseInt(document.getElementById('editPetAge').value || '0', 10),
+                breed: document.getElementById('editPetBreed').value.trim(),
+                type: document.getElementById('editPetType').value,
+                familyType: document.getElementById('editPetFamily').value,
+                ownerName: document.getElementById('editOwnerName').value.trim(),
+                ownerPhone: document.getElementById('editOwnerPhone').value.trim(),
+                ownerEmail: document.getElementById('editOwnerEmail').value.trim()
+            };
+            // Actualización optimista inmediata con rollback si falla
+            const before = { ...pets[idx] };
+            const updatedLocal = { ...pets[idx], ...payload, updatedAt: new Date().toISOString() };
+            pets[idx] = updatedLocal; savePets(pets);
+            renderPetsTable(); populatePetOptions(); showToast('Mascota actualizada'); closeEditPetModal();
+            // Sincronizar con API
+            apiFetch('/pets/'+id, { method:'PUT', body: JSON.stringify(payload) })
+                .then(updatedFromApi => {
+                    const currentPets = getPets();
+                    const i = currentPets.findIndex(p=>p.id===id);
+                    if(i !== -1){ currentPets[i] = { ...currentPets[i], ...updatedFromApi }; savePets(currentPets); renderPetsTable(); populatePetOptions(); }
+                })
+                .catch(err => {
+                    console.warn('No se pudo actualizar en API, se revierte edición local:', err.message);
+                    const currentPets = getPets();
+                    const i = currentPets.findIndex(p=>p.id===id);
+                    if(i !== -1){ currentPets[i] = before; savePets(currentPets); renderPetsTable(); populatePetOptions(); showToast('Error al actualizar en backend. Se deshicieron los cambios'); }
+                });
+        }
+        function askDeletePet(id){
+            const pets = getPets(); const pet = pets.find(p=>p.id===id); if(!pet) return;
+            petToDeleteId = id;
+            $('#deletePetName').innerText = pet.name;
+            $('#deletePetOwner').innerText = pet.ownerName;
+            modalDeleteCtrl.open();
+        }
+        function closeDeleteModal(){ modalDeleteCtrl.close(); petToDeleteId = null; }
+        async function confirmDelete(){
+            if(!petToDeleteId){ closeDeleteModal(); return; }
+            // Eliminación optimista con rollback si falla
+            const prevPets = getPets();
+            const removed = prevPets.find(p=>p.id===petToDeleteId);
+            const afterDelete = prevPets.filter(p=>p.id !== petToDeleteId);
+            savePets(afterDelete); renderPetsTable(); populatePetOptions();
+            closeDeleteModal(); showToast('Mascota eliminada');
+            // Sincronizar con API
+            apiFetch('/pets/'+petToDeleteId, { method:'DELETE' })
+                .catch(err => {
+                    console.warn('No se pudo eliminar en API, se revierte borrado local:', err.message);
+                    const restored = getPets(); restored.push(removed); savePets(restored); renderPetsTable(); populatePetOptions(); showToast('Error al eliminar en backend. Se restauró la mascota');
+                });
+        }
+
+        // --- Appointments (citas) ---
+        function applyFilters(){
+            renderAppointments();
+        }
+        
+        /* getAppts/saveAppts ya definidos con STORAGE_KEYS.APPTS arriba */
+
+        async function renderAppointments(){
+            const tbody = $('#appointmentsTableBody');
+            const appts = getAppts();
+            tbody.innerHTML = '';
+            if(appts.length === 0){
+                tbody.innerHTML = '<tr><td colspan="10" class="text-center">No hay citas programadas</td></tr>';
+                updateAppointmentStats();
+                return;
+            }
+            const statusFilter = $('#filterStatus')?.value || '';
+            const vetFilter = $('#filterVet')?.value || '';
+            const pets = getPets();
+            const filtered = appts.filter(a => (statusFilter ? a.status === statusFilter : true) && (vetFilter ? a.veterinarian === vetFilter : true));
+            if(filtered.length === 0){
+                tbody.innerHTML = '<tr><td colspan="10" class="text-center">No hay citas con esos filtros</td></tr>';
+                updateAppointmentStats();
+                return;
+            }
+            const role = getCurrentRole();
+            filtered.forEach(a=>{
+                const pet = pets.find(p=>p.id===a.petId) || {};
+                const tr = document.createElement('tr');
+                // Para usuarios: ocultar botón de editar; mantener Cancelar visible
+                const actionsHtml = (role === 'veterinarian')
+                    ? `<button class="btn" onclick="openEditAppointmentModal('${a.id}')"><i class="fas fa-edit"></i></button>
+                       <button class="btn btn-danger" onclick="openCancelAppointmentModal('${a.id}')"><i class="fas fa-ban"></i> Cancelar cita médica</button>`
+                    : `<button class="btn btn-danger" onclick="openCancelAppointmentModal('${a.id}')"><i class="fas fa-ban"></i> Cancelar cita médica</button>`;
+                tr.innerHTML = `
+                    <td>${a.id}</td>
+                    <td>${escapeHtml(pet.name || '—')}</td>
+                    <td>${escapeHtml(pet.ownerName || '—')}</td>
+                    <td>${a.date || ''}</td>
+                    <td>${a.time || ''}</td>
+                    <td>${a.veterinarian || ''}</td>
+                    <td>${a.reason || ''}</td>
+                    <td><span class="priority-badge ${a.priority}">${getPriorityLabel(a.priority)}</span></td>
+                    <td><span class="status-badge ${a.status}">${getStatusLabel(a.status)}</span></td>
+                    <td style="white-space:nowrap">${actionsHtml}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            updateAppointmentStats();
+        }
+
+        function getPriorityLabel(priority) {
+            const labels = {
+                'normal': 'Normal',
+                'high': 'Alta',
+                'urgent': 'Urgente'
+            };
+            return labels[priority] || priority;
+        }
+        
+        function getStatusLabel(status) {
+            const labels = {
+                'scheduled': 'Programada',
+                'completed': 'Completada',
+                'cancelled': 'Cancelada'
+            };
+            return labels[status] || status;
+        }
+        
+        function updateAppointmentStats(){
+            const appts = getAppts();
+            $('#totalAppointments').innerText = appts.length;
+            $('#pendingAppointments').innerText = appts.filter(a=>a.status==='scheduled').length;
+            $('#completedAppointments').innerText = appts.filter(a=>a.status==='completed').length;
+            $('#urgentAppointments').innerText = appts.filter(a=>a.priority==='urgent').length;
+        }
+
+        function openEditAppointmentModal(id){
+            if(getCurrentRole() === 'user'){ showToast('No tienes permiso para cambiar el estado de la cita'); return; }
+            const appts = getAppts();
+            const ap = appts.find(x=>x.id===id);
+            if(!ap) { console.warn('Editar cita: ID no encontrado', id); return; }
+            // Logging de estado actual
+            console.log('[Citas] Abrir modal edición → id:', id, 'estado actual:', ap.status);
+            // Mostrar el estado en español usando el mapeo
+            const currentLabel = getStatusLabel(ap.status);
+            $('#currentAppointmentStatus').innerText = currentLabel;
+            $('#newAppointmentStatus').value = ap.status;
+            const modalEl = document.getElementById('editAppointmentModal');
+            modalEl.dataset.editing = id;
+            modalEl.dataset.dirty = 'false';
+            // Listener de cambio para reflejar inmediatamente y loguear
+            const sel = document.getElementById('newAppointmentStatus');
+            if (sel) {
+                sel.onchange = function(){
+                    const oldStatus = ap.status;
+                    const newStatus = sel.value;
+                    $('#currentAppointmentStatus').innerText = getStatusLabel(newStatus);
+                    // marcar como dirty y loguear
+                    modalEl.dataset.dirty = 'true';
+                    console.log('[Citas] Cambio de estado en modal → id:', id, 'de:', oldStatus, 'a:', newStatus);
+                };
+            }
+            // Abrir con controlador reutilizable
+            editAppointmentCtrl.open();
+        }
+        function closeEditAppointmentModal(){
+            const modalEl = document.getElementById('editAppointmentModal');
+            if (!modalEl) return;
+            // Cerrar siempre sin mostrar mensaje
+            hide(modalEl);
+            delete modalEl.dataset.editing;
+            modalEl.dataset.dirty = 'false';
+        }
+        function saveAppointmentEdit(){
+            if(getCurrentRole() === 'user'){ showToast('No tienes permiso para editar estados'); return; }
+            const modalEl = document.getElementById('editAppointmentModal');
+            const id = modalEl?.dataset.editing;
+            if(!id) { console.warn('[Citas] Guardar edición sin id'); return; }
+            const newStatus = document.getElementById('newAppointmentStatus').value;
+            const appts = getAppts();
+            const ap = appts.find(a=>a.id===id);
+            if(ap){
+                const before = ap.status;
+                ap.status = newStatus;
+                saveAppts(appts);
+                renderAppointments();
+                console.log('[Citas] Guardado edición → id:', id, 'de:', before, 'a:', newStatus);
+                showToast('Cita actualizada');
+            }
+            closeEditAppointmentModal();
+        }
+        // --- Cancelar cita médica (modal llamativo) ---
+        function openCancelAppointmentModal(id){
+            if(getCurrentRole() === 'user'){ showToast('No tienes permiso para cancelar citas'); return; }
+            const appts = getAppts();
+            const ap = appts.find(a=>a.id===id);
+            if(!ap){ console.warn('[Citas] Cancelar cita: id no encontrado', id); return; }
+            const pet = (getPets().find(p=>p.id===ap.petId)) || {};
+            document.getElementById('cancelApptPetName').innerText = pet.name || '—';
+            document.getElementById('cancelApptOwner').innerText = pet.ownerName || '—';
+            document.getElementById('cancelApptDate').innerText = ap.date || '—';
+            document.getElementById('cancelApptTime').innerText = ap.time || '—';
+            document.getElementById('cancelApptVet').innerText = ap.veterinarian || '—';
+            const modal = document.getElementById('cancelAppointmentModal');
+            modal.dataset.apptId = id;
+            cancelApptCtrl.open();
+        }
+        function closeCancelAppointmentModal(){ cancelApptCtrl.close(); delete document.getElementById('cancelAppointmentModal').dataset.apptId; }
+        function confirmCancelAppointment(){
+            const id = document.getElementById('cancelAppointmentModal').dataset.apptId;
+            if(!id) return;
+            const appts = getAppts();
+            const idx = appts.findIndex(a=>a.id===id);
+            if(idx === -1) return;
+            // Eliminar la cita para que desaparezca
+            appts.splice(idx, 1);
+            saveAppts(appts);
+            renderAppointments();
+            cancelApptCtrl.close();
+            console.log('[Citas] Cita eliminada → id:', id);
+            showToast('Cita eliminada');
+        }
+
+        // --- Nueva Cita Médica ---
+        function openNewAppointmentModal(){
+            const sel = document.getElementById('newApptPet');
+            sel.innerHTML = '<option value="">Selecciona una mascota</option>';
+            const pets = getPets();
+            pets.forEach(p=>{
+                const opt = document.createElement('option');
+                opt.value = p.id; opt.textContent = `${p.name} (${p.ownerName || ''})`;
+                sel.appendChild(opt);
+            });
+            document.getElementById('newApptDate').value = '';
+            document.getElementById('newApptTime').value = '';
+            document.getElementById('newApptVet').value = '';
+            document.getElementById('newApptReason').value = '';
+            document.getElementById('newApptPriority').value = 'normal';
+            newAppointmentCtrl.open();
+        }
+        function closeNewAppointmentModal(){ newAppointmentCtrl.close(); }
+
+        // Flujo de cambios sin guardar eliminado: cierre directo en closeEditAppointmentModal
+        async function saveNewAppointment(){
+            const petId = document.getElementById('newApptPet').value;
+            const date = document.getElementById('newApptDate').value;
+            const time = document.getElementById('newApptTime').value;
+            const veterinarian = document.getElementById('newApptVet').value;
+            const reason = document.getElementById('newApptReason').value.trim();
+            const priority = document.getElementById('newApptPriority').value;
+            if(!petId || !date || !time || !veterinarian || !reason){
+                showToast('Completa todos los campos obligatorios');
+                return;
+            }
+            const payload = { petId, date, time, veterinarian, reason, priority, status:'scheduled' };
+            try{
+                const created = await apiFetch('/appointments', { method:'POST', body: JSON.stringify(payload) });
+                const appts = getAppts(); appts.push(created); saveAppts(appts);
+            }catch(err){
+                console.warn('Fallo al crear cita en API, se usa localStorage:', err.message);
+                const appts = getAppts();
+                const id = nextId('appt');
+                const appt = { id, ...payload, createdAt:new Date().toISOString() };
+                appts.push(appt);
+                saveAppts(appts);
+            }
+            renderAppointments();
+            updateAppointmentStats();
+            closeNewAppointmentModal();
+            showToast('Cita creada correctamente');
+        }
+
+        // --- Consultations form handling ---
+        function showConsultationForm(){
+            // Consultas integradas: redirige a Citas Médicas
+            showSection('citas-medicas');
+        }
+        function hideConsultationForm(){
+            // Consultas integradas: redirige a Citas Médicas
+            showSection('citas-medicas');
+        }
+        function showConsultationList(){
+            // Consultas integradas: redirige a Citas Médicas
+            showSection('citas-medicas');
+        }
+        function handleConsultationSubmit(e){
+            // Consultas integradas: utilizar el flujo de Citas Médicas
+            e.preventDefault();
+            showToast('Las consultas se gestionan desde Citas Médicas');
+            showSection('citas-medicas');
+        }
+
+        function renderConsultations(){
+            // Consultas integradas: no se renderiza lista independiente
+            showSection('citas-medicas');
+        }
+
+        function viewConsult(id){
+            // Consultas integradas: se gestionan en Citas Médicas
+            showSection('citas-medicas');
+        }
+
+        // --- Small helpers & public API for dev/test ---
+        window.showSection = showSection;
+        window.toggleMobileMenu = toggleMobileMenu;
+        window.showLoginForm = showLoginForm;
+        window.showRegisterForm = showRegisterForm;
+        window.savePetFromForm = savePetFromForm;
+        window.populateBreedOptions = populateBreedOptions;
+        window.populatePetOptions = populatePetOptions;
+        window.renderPetsTable = renderPetsTable;
+        window.renderAppointments = renderAppointments;
+        window.renderConsultations = renderConsultations;
+        // Exponer funciones de edición para que los botones inline funcionen
+        window.editPet = editPet;
+        window.openEditPetModal = openEditPetModal;
+        window.closeEditPetModal = closeEditPetModal;
+        window.saveEditPet = saveEditPet;
+        window.openEditAppointmentModal = openEditAppointmentModal;
+        window.closeEditAppointmentModal = closeEditAppointmentModal;
+        window.saveAppointmentEdit = saveAppointmentEdit;
+        window.openCancelAppointmentModal = openCancelAppointmentModal;
+        window.closeCancelAppointmentModal = closeCancelAppointmentModal;
+        window.confirmCancelAppointment = confirmCancelAppointment;
+        // Exponer funciones del modal de Nueva Cita para que los botones inline funcionen
+        window.openNewAppointmentModal = openNewAppointmentModal;
+        window.closeNewAppointmentModal = closeNewAppointmentModal;
+        window.saveNewAppointment = saveNewAppointment;
+        window.askDeletePet = askDeletePet;
+        window.confirmDelete = confirmDelete;
+        window.closeDeleteModal = closeDeleteModal;
+
+        // for debugging/tests
+        window.testRegisterPet = function(){
+            const id = nextId('pet');
+            const example = { id, name:'TestPet '+Math.floor(Math.random()*100), familyType:'domestic', type:'dog', breed:'Labrador', age:2, ownerName:'Test Owner', ownerPhone:'+571234', ownerEmail:'', createdAt:new Date().toISOString() };
+            const pets = getPets(); pets.push(example); savePets(pets); renderPetsTable(); populatePetOptions(); showToast('Mascota de prueba añadida');
+        };
+
+        // update basic stats
+        function updateStats(){
+            const pets = getPets();
+            const totalPetsEl = $('#totalPets');
+            if(totalPetsEl) totalPetsEl.innerText = pets.length;
+        }
+
+        // expose on window for convenience
+        window.showToast = showToast;
+        
+        // Función para mostrar consultas
+        function mostrarConsultas(tipo) {
+            // Redirige todas las acciones de consultas a Citas Médicas
+            showSection('citas-medicas');
+        }
+        window.mostrarConsultas = mostrarConsultas;
+        
+        // Agregar event listeners a los botones de consulta
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnNuevaConsulta = document.getElementById('btnNuevaConsulta');
+            const btnVerConsultas = document.getElementById('btnVerConsultas');
+            
+            if (btnNuevaConsulta) {
+                btnNuevaConsulta.addEventListener('click', function() {
+                    mostrarConsultas('form');
+                });
+            }
+            
+            if (btnVerConsultas) {
+                btnVerConsultas.addEventListener('click', function() {
+                    mostrarConsultas('list');
+                });
+            }
+        });
+    })();
+    </script>
+</body>
+</html>
+
